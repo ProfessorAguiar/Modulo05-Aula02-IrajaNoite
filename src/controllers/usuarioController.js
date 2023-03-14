@@ -7,6 +7,7 @@ function UsuarioController(app){
     app.post('/usuario',inserir)
     function inserir(req, res){
         res.send('Inserindo Usuários')
+        users.push(req.body)
         console.log(req.body)
     }
 }
