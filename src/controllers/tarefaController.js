@@ -4,6 +4,10 @@ function TarefaController(app){
     function exibir(req, res){
         res.send(tarefas)
     }
+    app.get('/tarefa',exibir)
+    function exibir(req, res){
+        res.send(tarefas)
+    }
     app.post('/tarefa',inserir)
     function inserir(req, res){
         res.send('Inserindo Tarefas')
