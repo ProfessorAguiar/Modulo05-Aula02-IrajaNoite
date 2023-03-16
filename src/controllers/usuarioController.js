@@ -22,5 +22,17 @@ function UsuarioController(app) {
         users.push(req.body)
         console.log(req.body)
     }
+    app.delete('/usuario/email/:email', deletar)
+    function deletar(req, res) {
+        const usuario = users.find(usuario =>
+            usuario.email === req.params.email)
+        if (usuario) {
+            res.send(`Usuário: ${usuario.nome} deletado`)
+            const index=users.indexOf(usuario)
+            users.splice(index,1)
+        }else{
+            res.send(`Usuário com email: ${req.params.email} não encontrado.`)
+        }
+    }
 }
 export default UsuarioController
