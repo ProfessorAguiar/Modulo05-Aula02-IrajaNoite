@@ -34,5 +34,16 @@ function UsuarioController(app) {
             res.send(`Usuário com email: ${req.params.email} não encontrado.`)
         }
     }
+    app.put('/usuario/email/:email', Atualizar)
+    function Atualizar(req, res) {
+        const usuario = users.find(usuario =>
+            usuario.email === req.params.email)
+        if (usuario) {
+            res.send(`Usuário: ${usuario.nome} deletado`)
+            const index=users.indexOf(usuario)
+            users.splice(index,1)
+        }else{
+            res.send(`Usuário com email: ${req.params.email} não encontrado.`)
+        }
 }
 export default UsuarioController
