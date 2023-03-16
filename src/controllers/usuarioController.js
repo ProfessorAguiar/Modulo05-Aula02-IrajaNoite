@@ -41,9 +41,12 @@ function UsuarioController(app) {
         if (usuario) {
             res.send(`Usuário: ${usuario.nome} deletado`)
             const index=users.indexOf(usuario)
-            users.splice(index,1)
+            users[index].nome=req.body.nome
+            users[index].email=req.body.email
+            users[index].senha=req.body.senha
         }else{
             res.send(`Usuário com email: ${req.params.email} não encontrado.`)
         }
+    }
 }
 export default UsuarioController
