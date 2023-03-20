@@ -38,29 +38,42 @@ function UsuarioController(app) {
                 filename: './src/infra/bdTarefas.db',
                 driver: sqlite3.Database
             })
-            const result = await db.all('SELECT * FROM Usuario where email like ?',req.params.email)
-            if(result!=''){
+            const result = await db.all('SELECT * FROM Usuario where email like ?', req.params.email)
+            if (result != '') {
                 res.send(result)
-            }else{
+            } else {
                 res.send(`Usuário com email: ${req.params.email} não encontrado`)
             }
             db.close()
         })()
-        // const usuario = users.find(usuario =>
-        //     usuario.email === req.params.email)
-        // if (usuario) {
-        //     res.send(`<b><p>nome: ${usuario.nome}</p></b>
-        //     <p>email: ${usuario.email}</p>
-        //     <p>senha: ${usuario.senha}</p>`)
-        // }else{
-        //     res.send(`Usuário: ${req.params.email} não encontrado.`)
-        // }
+    }
+    app.get('/usuario/nome/:nome', buscarNome)
+    function buscarNome(req, res) {
+        (async () => {
+            const db = await open({
+                filename: './src/infra/bdTarefas.db',
+                driver: sqlite3.Database
+            })
+            const result = await db.all(`SELECT * FROM Usuario where nome like ?`, req.params.nome)
+            if (result != '') {
+                res.send(result)
+            } else {
+                res.send(`Usuário: ${req.params.nome} não encontrado`)
+            }
+            db.close()
+        })()
     }
     app.post('/usuario', inserir)
     function inserir(req, res) {
-        res.send('Inserindo Usuários')
-        users.push(req.body)
-        console.log(req.body)
+        (async () => {
+            const db = await open({
+                filename: './src/infra/bdTarefas.db',
+                driver: sqlite3.Database
+            })
+            await db.run(`INSERT INTO Usuario(nome,email,senha) VALUES(?,?,?)`, req.body.nome, req.body.email, req.body.senha)
+            res.send(`Usuário: ${req.body.nome} inserido com sucesso.`)
+            db.close()
+        })()
     }
     app.delete('/usuario/email/:email', deletar)
     function deletar(req, res) {
@@ -68,9 +81,9 @@ function UsuarioController(app) {
             usuario.email === req.params.email)
         if (usuario) {
             res.send(`Usuário: ${usuario.nome} deletado`)
-            const index=users.indexOf(usuario)
-            users.splice(index,1)
-        }else{
+            const index = users.indexOf(usuario)
+            users.splice(index, 1)
+        } else {
             res.send(`Usuário com email: ${req.params.email} não encontrado.`)
         }
     }
@@ -80,11 +93,11 @@ function UsuarioController(app) {
             usuario.email === req.params.email)
         if (usuario) {
             res.send(`Usuário: ${usuario.nome} deletado`)
-            const index=users.indexOf(usuario)
-            users[index].nome=req.body.nome
-            users[index].email=req.body.email
-            users[index].senha=req.body.senha
-        }else{
+            const index = users.indexOf(usuario)
+            users[index].nome = req.body.nome
+            users[index].email = req.body.email
+            users[index].senha = req.body.senha
+        } else {
             res.send(`Usuário com email: ${req.params.email} não encontrado.`)
         }
     }
