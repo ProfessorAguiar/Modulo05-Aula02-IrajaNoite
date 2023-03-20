@@ -2,8 +2,8 @@ import { users } from "../infra/bd.js"
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
 function UsuarioController(app) {
-    app.get('/usuarioall', exibirAll)
-    function exibirAll(req, res) {
+    app.get('/usuario', exibir)
+    function exibir(req, res) {
         (async () => {
             const db = await open({
                 filename: './src/infra/bdTarefas.db',
@@ -14,34 +14,47 @@ function UsuarioController(app) {
             db.close()
         })()
     }
-    app.get('/usuario', exibir)
-    function exibir(req, res) {
+    // app.get('/usuario', exibir)
+    // function exibir(req, res) {
+    //     (async () => {
+    //         const db = await open({
+    //             filename: './src/infra/bdTarefas.db',
+    //             driver: sqlite3.Database
+    //         })
+    //         const sql = 'SELECT * FROM Usuario'
+    //         db.each(sql,(err, row) => {
+    //             if (err) {
+    //               throw err;
+    //             }
+    //             res.send(`${row.nome} ${row.email} - ${row.senha}`);
+    //           });
+    //           db.close()
+    //     })()
+    // }
+    app.get('/usuario/email/:email', buscarEmail)
+    function buscarEmail(req, res) {
         (async () => {
             const db = await open({
                 filename: './src/infra/bdTarefas.db',
                 driver: sqlite3.Database
             })
-            const sql = 'SELECT * FROM Usuario'
-            db.each(sql,(err, row) => {
-                if (err) {
-                  throw err;
-                }
-                res.send(`${row.nome} ${row.email} - ${row.senha}`);
-              });
-              db.close()
+            const result = await db.all('SELECT * FROM Usuario where email like ?',req.params.email)
+            if(result!=''){
+                res.send(result)
+            }else{
+                res.send(`Usuário com email: ${req.params.email} não encontrado`)
+            }
+            db.close()
         })()
-    }
-    app.get('/usuario/email/:email', buscar)
-    function buscar(req, res) {
-        const usuario = users.find(usuario =>
-            usuario.email === req.params.email)
-        if (usuario) {
-            res.send(`<b><p>nome: ${usuario.nome}</p></b>
-            <p>email: ${usuario.email}</p>
-            <p>senha: ${usuario.senha}</p>`)
-        }else{
-            res.send(`Usuário: ${req.params.email} não encontrado.`)
-        }
+        // const usuario = users.find(usuario =>
+        //     usuario.email === req.params.email)
+        // if (usuario) {
+        //     res.send(`<b><p>nome: ${usuario.nome}</p></b>
+        //     <p>email: ${usuario.email}</p>
+        //     <p>senha: ${usuario.senha}</p>`)
+        // }else{
+        //     res.send(`Usuário: ${req.params.email} não encontrado.`)
+        // }
     }
     app.post('/usuario', inserir)
     function inserir(req, res) {
