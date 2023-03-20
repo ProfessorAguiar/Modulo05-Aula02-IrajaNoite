@@ -1,8 +1,35 @@
 import { users } from "../infra/bd.js"
+import sqlite3 from 'sqlite3'
+import { open } from 'sqlite'
 function UsuarioController(app) {
+    app.get('/usuarioall', exibirAll)
+    function exibirAll(req, res) {
+        (async () => {
+            const db = await open({
+                filename: './src/infra/bdTarefas.db',
+                driver: sqlite3.Database
+            })
+            const result = await db.all('SELECT * FROM Usuario')
+            res.send(result)
+            db.close()
+        })()
+    }
     app.get('/usuario', exibir)
     function exibir(req, res) {
-        res.send(users)
+        (async () => {
+            const db = await open({
+                filename: './src/infra/bdTarefas.db',
+                driver: sqlite3.Database
+            })
+            const sql = 'SELECT * FROM Usuario'
+            db.each(sql,(err, row) => {
+                if (err) {
+                  throw err;
+                }
+                res.send(`${row.nome} ${row.email} - ${row.senha}`);
+              });
+              db.close()
+        })()
     }
     app.get('/usuario/email/:email', buscar)
     function buscar(req, res) {
