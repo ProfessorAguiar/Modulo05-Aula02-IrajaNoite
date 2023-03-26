@@ -10,6 +10,7 @@ function TarefaController(app) {
             })
             const result = await db.all('SELECT * FROM Tecnologia')
             res.send(result)
+            // res.cookie('cookieName', 'cookieValue', { sameSite: 'none', secure: true})
             db.close()
         })()
     }
