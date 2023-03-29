@@ -69,7 +69,7 @@ function TarefaController(app) {
             const result = await db.all('SELECT * FROM Tecnologia where id_tecnologia like ?', req.params.id)
             if (result != '') {
                 res.send(`Tecnologia: ${req.params.id} Atualizada`)
-                await db.run('UPDATE Tecnologia SET titulo=?, descricao=?, status=?, data_criacao=?, id_usuario=?, img=? WHERE titulo= ?', req.body.titulo, req.body.descricao, req.body.status,req.body.data_criacao,req.body.id_usuario,req.body.img)
+                await db.run('UPDATE Tecnologia SET titulo=?, descricao=?, status=?, data_criacao=?, id_usuario=?, img=? WHERE id_tecnologia= ?', req.body.titulo, req.body.descricao, req.body.status,req.body.data_criacao,req.body.id_usuario,req.body.img,req.params.id)
             } else {
                 res.send(`Tecnologia: ${req.params.id} não encontrada`)
             }

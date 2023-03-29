@@ -38,8 +38,6 @@ function UsuarioController(app) {
         res.send(req.file)
 
     })
-
-
     app.get('/usuario/email/:email', buscarEmail)
     function buscarEmail(req, res) {
         (async () => {
@@ -144,19 +142,19 @@ function UsuarioController(app) {
             db.close()
         })()
     }
-    app.put('/usuario/email/:email', Atualizar)
+    app.put('/usuario/id/:id', Atualizar)
     function Atualizar(req, res) {
         (async () => {
             const db = await open({
                 filename: './src/infra/bdTarefas.db',
                 driver: sqlite3.Database
             })
-            const result = await db.all('SELECT * FROM Usuario where email like ?', req.params.email)
+            const result = await db.all('SELECT * FROM Usuario where id like ?', req.params.id)
             if (result != '') {
-                res.send(`Usuário: ${req.params.email} Atualizado`)
+                res.send(`Usuário: ${req.params.id} Atualizado`)
                 await db.run('UPDATE Usuario SET nome=?, email=?, senha=? WHERE email= ?', req.body.nome, req.body.email, req.body.senha, req.params.email)
             } else {
-                res.send(`Usuário: ${req.params.email} não encontrado`)
+                res.send(`Usuário: ${req.params.id} não encontrado`)
             }
             db.close()
         })()
